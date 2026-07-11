@@ -1,27 +1,27 @@
-# uvm-coverage-agent-backup-v2.9 — Bug #1 Accumulator Fix
+# uvm-coverage-agent-backup-v2.10 — Export Fix + Full Cross-Platform Verification
 
 ## What This Version Is
 
 This is the stable, production version of the UVM Coverage Agent
-framework with Bug #1 (coverage accumulator regression) fixed and
-verified across all three supported RTL designs. All three designs
-confirmed at 100% merged functional coverage with the fix applied.
+framework with two confirmed fixes applied and all three supported
+RTL designs verified at 100% merged functional coverage on both
+Mac (ARM64) and GitHub Codespaces (x86_64).
 
-This checkpoint follows v2.8-ahb2apb, which proved all three designs
-at 100% on the original codebase. v2.9 adds the Bug #1 fix and
-re-verifies all three designs to confirm the fix is correct.
+This checkpoint follows v2.9, which fixed Bug #1 (coverage accumulator
+regression). v2.10 adds the export placement fix that enables reliable
+100% coverage convergence in Codespaces environments.
 
 ---
 
-## What We Fixed
+## What We Fixed in v2.9 (carried forward)
 
 ### Bug #1 — Coverage Accumulator Regression
 
 **The symptom:** During a single agent run, merged coverage could
 decrease mid-run. A bin proven reachable in iteration 3 would
 disappear from the merged result in iteration 4, and coverage would
-drop from 97.2% back to 91.7%. This was observed live, twice, in
-GitHub Codespaces — it was the original trigger for this entire fix.
+drop from 97.2% back to 91.7%. Observed live, twice, in GitHub
+Codespaces — the original trigger for this fix.
 
 **The root cause:** In agent.py, the variable `directed_bins` was
 reassigned from the most recent successful directed-test YAML file
@@ -31,51 +31,17 @@ at line 946 every iteration:
 
 This replaced `directed_bins` with ONLY the most recent iteration's
 result. There was no mechanism to remember what previous iterations
-had proven. The three calls to `merge_coverage(base_bins, directed_bins)`
-at lines 803, 947, 973 therefore only ever saw the latest iteration's
-data. When iteration N's test hit bins X and Y but iteration N+1's
-test did not re-exercise those paths, bins X and Y reverted to zero
-in the merged result — a silent regression.
+had proven. When iteration N's test hit bins X and Y but iteration
+N+1's test did not re-exercise those paths, bins X and Y reverted
+to zero in the merged result — a silent regression.
 
-**Historical proof this is real:** The real iteration data from the
-v2.7 Mac run showed cx_full_empty[(1,1)] with 2 hits in iteration 3,
-then absent from iteration 4 onward, with the final merged report
-missing that bin entirely. The same regression pattern was reproduced
-live in Codespaces and twice on Mac before the fix was applied.
+**The fix (agent.py — 2 additions, 5 substitutions):**
 
----
-
-## What Made Us Fix This
-
-The Bug #1 regression was first observed in GitHub Codespaces when
-running the async_fifo design, which was supposed to already be proven
-at 100% coverage. The run showed:
-
-    [ITER-6][MERGE] 97.2% → 91.7% (Δ−8.3%)
-
-Coverage went DOWN. This is impossible in a correct coverage accumulation
-system — once a bin is proven reachable, it stays reachable regardless
-of what later tests do.
-
-The regression was independently reproduced twice on Mac before any fix
-was attempted, establishing it as a real, systematic bug not a one-off
-event.
-
----
-
-## How We Fixed It
-
-The fix adds a persistent accumulator dictionary that tracks the
-best-ever hit count per bin across all iterations of a single run,
-using per-bin maximum semantics.
-
-### Changes to agent.py (2 additions, 5 substitutions)
-
-**Addition 1 — Initialize accumulator before the loop (line 787):**
+Addition 1 — Initialize accumulator before the loop (line 787):
 
     accumulated_directed_bins = {}
 
-**Addition 2 — Update accumulator after each successful sim (after line 946):**
+Addition 2 — Update accumulator after each successful sim:
 
     # Bug #1 fix: UCIS union-merge accumulation (per-bin max, never decreases)
     for _bin, _hits in directed_bins.items():
@@ -83,209 +49,183 @@ using per-bin maximum semantics.
             accumulated_directed_bins.get(_bin, 0), _hits
         )
 
-**Substitution — Replace all five merge_coverage() call sites:**
+All five merge_coverage() call sites updated to use
+accumulated_directed_bins instead of directed_bins.
 
-    Line 804:  merge_coverage(base_bins, directed_bins)
-               → merge_coverage(base_bins, accumulated_directed_bins)
+**Why max() and not sum():** max() correctly answers "has this bin
+ever been proven reachable." sum() would double-count hits across
+iterations, falsely implying more evidence than exists.
 
-    Line 953:  merge_coverage(base_bins, directed_bins)
-               → merge_coverage(base_bins, accumulated_directed_bins)
-
-    Line 955:  save_merged(base_bins, directed_bins, cfg)
-               → save_merged(base_bins, accumulated_directed_bins, cfg)
-
-    Line 979:  merge_coverage(base_bins, directed_bins)
-               → merge_coverage(base_bins, accumulated_directed_bins)
-
-    Line 999:  print_option_c_table(base_bins, directed_bins, ...)
-               → print_option_c_table(base_bins, accumulated_directed_bins, ...)
-
-**Nothing else changed.** The merge_coverage() function signature is
-unchanged. All three design-specific folders are untouched. The agent
-remains fully design-agnostic — no signal names, bin names, or design
-names appear anywhere in the new accumulator logic.
-
-### Why max() and not sum()
-
-Sum would double-count: if a bin gets 8 hits in iteration 2 and 8
-hits again in iteration 5 (same stimulus re-run), sum would show 16,
-falsely implying twice the evidence. max() correctly answers "has this
-bin ever been proven reachable," which is the actual question functional
-coverage is supposed to answer.
+**Research backing:**
+- Accellera UCIS 1.0 (June 2012): union-merge semantics — a bin hit
+  in any run remains credited regardless of later runs.
+- Elitism in evolutionary algorithms (ACM CISAI 2025): preserve the
+  highest-performing solution across generations unconditionally.
+- AFL/libFuzzer corpus model (IRFuzzer 2024): inputs that prove new
+  coverage are permanently saved, never discarded.
 
 ---
 
-## What Backed Up the Fix — Research and Standards
+## What We Fixed in v2.10
 
-### 1. Accellera UCIS 1.0 Standard (June 2012, DAC)
+### Fix 2 — Export Placement (clean_code function in agent.py)
 
-The industry standard for coverage database interoperability defines
-merge semantics as union-based: "UCIS allows users to analyze, grade,
-merge and report coverage from one or more databases from one or more
-tool vendors." (Accellera Systems Initiative, June 2012)
+**The symptom:** In Codespaces (x86_64 Linux), every successful
+simulation showed exactly 0% coverage gain — merged coverage never
+moved despite the sim completing without errors. The agent would
+write "coverage did not move despite successful sim run" in LESSONS.md
+and continue iterating with no progress. All AGENT bins showed 0
+in the final report.
 
-"A comprehensive verification methodology employs multiple verification
-processes. Each verification process generates one or more coverage
-metrics. One of the key roles of the verification team is to gather,
-merge and interpret this multitude of coverage data." (Semiconductor
-Engineering, UCIS Knowledge Center)
+**The root cause:** When the LLM generates long test files (250+ lines)
+targeting hard CDC bins in Codespaces, it places
+`coverage_db.export_to_yaml(...)` at module level — zero indentation,
+outside the test function. This was confirmed directly:
 
-Our per-bin max() accumulator directly implements UCIS union-merge
-semantics: a bin hit in any run remains credited, regardless of later
-runs that do not re-exercise it.
+    tail -5 tb/test_directed.py
+    # showed: coverage_db.export_to_yaml("/path/coverage.yml")
+    # at zero indent — outside the function
 
-### 2. Elitism in Evolutionary Algorithms
+Python executes module-level code at import time, before any test
+runs. So the sequence was:
 
-"Elitism explicitly preserves the highest-performing solutions across
-generations, ensuring their direct contribution to subsequent
-populations." (ACM CISAI 2025)
+    1. Python imports test file
+    2. export_to_yaml fires immediately — coverage_db has zero hits
+    3. Zeros written to YAML
+    4. Test function runs — signals driven — bins hit — data in memory
+    5. Test function ends — no second export fires
+    6. Python exits — real coverage data gone forever
+    7. Agent reads YAML — sees zeros — concludes "coverage did not move"
 
-In our context, each iteration's directed test is one "generation" of
-stimulus. The accumulator implements elitism: the best-ever coverage
-result per bin is preserved unconditionally into the next generation,
-regardless of whether the next generation's test happens to re-exercise
-that path.
+On Mac (ARM64), the LLM generates shorter tests (~100-150 lines)
+where the export naturally lands inside the function at 4-space indent.
+In Codespaces, longer tests cause the export to fall at module level.
 
-### 3. Coverage-Guided Fuzzing Corpus Model (AFL/libFuzzer)
+**The fix (5 lines added to clean_code() in agent.py):**
 
-"When a particular program input results in increased code coverage,
-AFL stores this input in a seed cache for future use. Both fuzzers
-expect the test corpus to reside in a directory, one file per input."
-(IRFuzzer 2024, LLVM project documentation)
+    # Strip module-level (zero-indent) export_to_yaml before ast.parse.
+    # LLM places this outside the function in long Codespaces tests.
+    # Export guard at line 905 then injects correctly indented version.
+    code = '\n'.join(
+        line for line in code.split('\n')
+        if not line.startswith('coverage_db.export_to_yaml')
+    )
 
-Our fix follows the same fundamental principle: once a coverage
-improvement is proven, it is permanently preserved — never discarded
-because a later attempt explored a different path.
+The strip runs BEFORE ast.parse(), so the post-strip code is
+validated. The export guard at line 905 then sees no export in
+the code and injects a correctly 4-space-indented version inside
+the test function. This is design-agnostic — no signal names, bin
+names, or paths are hardcoded.
 
-### 4. Verification with the Fix — Live Evidence
+**Confirmation:** After the fix, "Added missing coverage export line"
+appears in the agent log when the fix fires, and successful sims
+immediately show real coverage gains instead of 0%.
 
-The fix was verified in a six-phase adversarial audit:
+### Fix 3 — Coverage Thresholds Updated
 
-**Phase 1 (Spec Audit):** Ten explicit requirements defined, R1-R9
-verified statically from code, R10 verified by live run.
+    uart_tx config.yaml:  threshold 95 → 98
+    ahb2apb config.yaml:  threshold 95 → 98
 
-**Phase 2 (Code Audit):** All six relevant code blocks audited,
-every merge_coverage() call site identified, save_merged() internal
-behavior confirmed harmless.
-
-**Phase 3 (Adversarial Break Attempt):** Eight attack scenarios
-tested — empty accumulator on iteration 1, all iterations fail,
-type mismatch, max vs sum semantics, missing/extra bins, single
-iteration, key normalization. All eight rated SAFE.
-
-**Phase 4 (Fix in pieces):** Implemented as six sub-pieces with
-syntax check after each. No piece proceeded until the previous
-passed. Backup at agent/agent.py.bug1_backup.
-
-**Phase 5 (Spec Re-verification):** All nine statically-verifiable
-requirements confirmed MET with exact line numbers.
-
-**Phase 6 (Tests):** Eight adversarial unit tests written and run,
-including the exact real v2.7 Mac iteration data that originally
-exhibited the regression. All eight passed. Test file preserved at
-agent/agent.py.bug1_backup location for reference.
+Both designs consistently reach 100% in 1-2 iterations. Setting
+threshold to 98 ensures the agent continues past easy wins and
+closes hard bins before stopping.
 
 ---
 
-## Verification Results — All Three Designs at 100%
-
-All three designs were re-verified with a clean LESSONS.md before
-each run:
-
-### async_fifo — 36/36 bins, 100.0%
-
-    History: ['92%', '92%', '100%']    (3 iterations used)
-    AGENT-only bins:
-      cx_full_empty[(1,1)]: 3 hits
-      cx_rrst_ren[(0,1)]:   4 hits
-      cx_wrst_wen[(0,1)]:   7 hits
-    Data failures: 0
-
-### uart_tx — 18/18 bins, 100.0%
-
-    History: ['89%', '100%']           (1 iteration used)
-    AGENT-only bins:
-      cx_en_busy[(1,1)]:  139 hits
-      cx_rst_en[(0,1)]:     4 hits
-    Data failures: 0
-
-### ahb2apb — 46/46 bins, 100.0%
-
-    History: ['67%', '67%', '67%', '67%', '67%', '67%', '67%', '100%']
-             (8 iterations, 15 hard bins all closed on iteration 7)
-    AGENT-only bins (15 total):
-      cp_fsm[4], cp_fsm[7], cp_htrans[1], cp_htrans[3],
-      cp_pselx[2], cp_pselx[4], cx_psel_enable[(0,1)],
-      cx_psel_enable[(2,0)], cx_psel_enable[(2,1)],
-      cx_psel_enable[(4,0)], cx_psel_enable[(4,1)],
-      cx_write_htrans[(0,1)], cx_write_htrans[(0,3)],
-      cx_write_htrans[(1,1)], cx_write_htrans[(1,3)]
-    Data failures: 0
-
-**All three histories are monotonically non-decreasing.**
-No regression observed in any of the three verification runs.
-This confirms both the accumulator fix and the absence of Bug #1.
-
----
-
-## Key Operational Rule Discovered During This Fix
+## Key Operational Rule
 
 **Clear LESSONS.md before every fresh evaluation run.**
 
-Live evidence confirmed that stale LESSONS.md entries from a prior
-session contaminate the LLM's prompt with irrelevant historical
-context, causing it to generate lower-quality test code in subsequent
-runs. Runs with a clean LESSONS.md consistently converged to 100%.
-Runs with stale cross-session entries from a different date got stuck
-at 91.7% indefinitely.
+Stale LESSONS.md entries from a prior session contaminate the LLM's
+prompt with irrelevant historical context, causing it to generate
+lower-quality test code. This was confirmed live — runs with polluted
+LESSONS.md stayed at 91.7% indefinitely while clean runs converged
+to 100% consistently.
 
-Before every evaluation run:
-
-    rm -f LESSONS.md                          # for FIFO
-    rm -f designs/uart_tx/LESSONS.md          # for uart_tx
-    rm -f designs/ahb2apb/LESSONS.md          # for ahb2apb
+    rm -f LESSONS.md                        # async_fifo
+    rm -f designs/uart_tx/LESSONS.md        # uart_tx
+    rm -f designs/ahb2apb/LESSONS.md        # ahb2apb
     python3 agent/agent.py <config.yaml>
 
 ---
 
-## Branches in This Repository
+## Verification Results — All Three Designs at 100% on Both Platforms
 
-This version is pushed as two branches with identical content:
+### Mac ARM64 (Apple Silicon)
 
-    uvm-coverage-agent-backup-v2.9-dev      Safe to branch further work from
-    uvm-coverage-agent-backup-v2.9-untouch  Permanent frozen reference
+    async_fifo: 100% — 36/36 bins — AGENT: cx_full_empty[(1,1)],
+                cx_rrst_ren[(0,1)], cx_wrst_wen[(0,1)]
+    uart_tx:    100% — 18/18 bins — AGENT: cx_en_busy[(1,1)],
+                cx_rst_en[(0,1)]
+    ahb2apb:    100% — 46/46 bins — AGENT: 15 bins including all
+                cp_fsm hard states and cx_psel_enable variants
 
-Do not commit to the untouch branch. Use dev for any further fixes.
+### GitHub Codespaces x86_64 (Debian Trixie, Azure/Intel)
+
+    async_fifo: 100% — verified across two independent runs
+                Run 1: 4 iterations, Run 2: 8 iterations
+    uart_tx:    100% — 1 iteration (14.3s including compilation)
+    ahb2apb:    100% — 2 iterations, all 15 hard bins closed
+
+All histories monotonically non-decreasing. No regression observed
+in any run across either platform. Summary: BASE=0, AGENT=3+,
+BOTH=majority on all designs.
 
 ---
 
-## What Is Still Pending (Known Issues, Not Fixed in v2.9)
+## Architecture — Why This Works Across Platforms
 
-**Bug #2 — LESSONS.md deduplication without bin identity (P1 — High):**
-The write_lesson() function has no parameter for which bin was the
-primary target. Global deduplication by "Avoid:" text can silently
-evict bin-specific lessons. Impact: efficiency only, does not affect
-reported coverage numbers.
+The two key fixes together address the full Codespaces problem:
 
-**time.sleep(60) (P2 — Medium):**
-8 iterations × 60 seconds = 8 minutes of dead wait per run. Safe to
-reduce to time.sleep(2). Not yet changed in this version.
+Bug #1 fix ensures coverage never regresses — bins proven hit in
+iteration N stay credited in iterations N+1 through max_iter.
 
-**Export guard (Line 905) (P3 — Latent):**
-The check `if 'export_to_yaml' not in code:` only injects a corrected
-export if the LLM did not include one at all. If the LLM places its
-own export at module level (zero indent), the guard is bypassed and
-coverage data is silently lost. Confirmed to occur with polluted
-LESSONS.md. Does not occur with clean LESSONS.md and normal runs.
+Export fix ensures successful sims always save their data — the
+LLM's module-level export is stripped before the test is written
+to disk, and a correctly-indented version is injected inside the
+function by the existing guard at line 905.
+
+Both fixes are in agent.py only — shared across all designs. Zero
+design-specific code was introduced. Adding a new design requires
+no knowledge of either fix.
+
+---
+
+## Branches
+
+    uvm-coverage-agent-backup-v2.10-dev      Active development branch
+    uvm-coverage-agent-backup-v2.10-untouch  Frozen verified reference
+
+---
+
+## What Is Still Pending
+
+**Bug #2 — LESSONS.md deduplication without bin identity (P1):**
+write_lesson() has no parameter for which bin was the primary target.
+Global deduplication by "Avoid:" text can silently evict bin-specific
+lessons when different bins produce similar error text. Impact:
+efficiency only — may cost extra iterations, does not corrupt any
+reported coverage number.
+
+**time.sleep(60) (P2):**
+8 iterations x 60 seconds = 8 minutes of dead wait per full run.
+Safe to reduce to time.sleep(2). One line change, not yet applied.
+
+**setup.sh zlibc (P2):**
+The devcontainer setup.sh still includes zlibc in the apt-get
+install list. zlibc does not exist on Debian Trixie (the Codespaces
+base image), causing the postCreateCommand to fail on every new
+Codespace. Manual workaround required: remove zlibc from the
+apt-get line and run setup.sh manually. Fix is a one-line sed
+command, not yet committed.
 
 ---
 
 ## File Structure
 
-    agent/agent.py              The fixed agent (Bug #1 resolved)
-    agent/agent.py.bug1_backup  Original pre-fix backup
-    designs/async_fifo/         FIFO design (root-level tb/, rtl/)
-    designs/uart_tx/            UART transmitter design
-    designs/ahb2apb/            AHB-to-APB bridge design (reference impl)
+    agent/agent.py              Fixed agent (Bug #1 + export fix)
+    agent/agent.py.bug1_backup  Pre-Bug#1-fix backup
     framework/                  Shared base classes (unchanged)
-    config.yaml                 async_fifo config (root level)
+    config.yaml                 async_fifo config (threshold: 98)
+    designs/uart_tx/            UART transmitter (threshold: 98)
+    designs/ahb2apb/            AHB-to-APB bridge (threshold: 98)
