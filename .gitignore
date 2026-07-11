@@ -1,0 +1,7 @@
+sim_build/
+__pycache__/
+*.pyc
+*.pyo
+results.xml
+*.bak
+.DS_Store

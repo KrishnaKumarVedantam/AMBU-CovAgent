@@ -1,0 +1,27 @@
+design_name: uart_tx
+
+rtl_file: rtl/uart_tx.v
+
+base_module: tb.tb_uart_tx
+
+directed_module: tb.test_directed
+
+scoreboard_module: tb.test_scoreboard
+
+coverpoint_names: [top.cp_resetn, top.cp_tx_en, top.cp_tx_busy, top.cp_fsm, top.cx_en_busy, top.cx_rst_en]
+
+threshold: 98
+
+max_iter: 8
+
+yml_cov: coverage_reports/coverage.yml
+
+yml_base: coverage_reports/coverage_base.yml
+
+make_cwd: /Users/krishna/uvm-coverage-agent-backup-v2/designs/uart_tx
+
+sample_function: sample_coverage
+
+chain_of_thought: false
+
+depth: 0

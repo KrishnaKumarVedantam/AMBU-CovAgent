@@ -1,0 +1,10 @@
+{
+  "name": "uvm-coverage-agent",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  }
+}

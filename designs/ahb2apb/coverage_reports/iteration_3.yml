@@ -1,0 +1,139 @@
+top:
+  cover_percentage: 78.26
+  coverage: 36
+  size: 46
+  type: <class 'cocotb_coverage.coverage.CoverItem'>
+top.cp_fsm:
+  at_least: 1
+  bins:_hits:
+    0: 25
+    1: 2
+    2: 7
+    3: 2
+    4: 1
+    5: 7
+    6: 2
+    7: 1
+  cover_percentage: 100.0
+  coverage: 8
+  size: 8
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_hreadyin:
+  at_least: 1
+  bins:_hits:
+    0: 0
+    1: 47
+  cover_percentage: 50.0
+  coverage: 1
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_hresetn:
+  at_least: 1
+  bins:_hits:
+    0: 2
+    1: 45
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_htrans:
+  at_least: 1
+  bins:_hits:
+    0: 15
+    1: 13
+    2: 5
+    3: 14
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_hwrite:
+  at_least: 1
+  bins:_hits:
+    0: 28
+    1: 19
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_penable:
+  at_least: 1
+  bins:_hits:
+    0: 37
+    1: 10
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_pselx:
+  at_least: 1
+  bins:_hits:
+    0: 27
+    1: 20
+    2: 0
+    4: 0
+  cover_percentage: 50.0
+  coverage: 2
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_valid:
+  at_least: 1
+  bins:_hits:
+    0: 29
+    1: 18
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cx_psel_enable:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 27
+    (0, 1): 0
+    (1, 0): 10
+    (1, 1): 10
+    (2, 0): 0
+    (2, 1): 0
+    (4, 0): 0
+    (4, 1): 0
+  cover_percentage: 37.5
+  coverage: 3
+  size: 8
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_write_htrans:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 13
+    (0, 1): 0
+    (0, 2): 1
+    (0, 3): 14
+    (1, 0): 2
+    (1, 1): 13
+    (1, 2): 4
+    (1, 3): 0
+  cover_percentage: 75.0
+  coverage: 6
+  size: 8
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_write_valid:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 14
+    (0, 1): 14
+    (1, 0): 15
+    (1, 1): 4
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1

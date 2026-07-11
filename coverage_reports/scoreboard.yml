@@ -1,0 +1,181 @@
+scoreboard:
+  "cp_empty[0]":
+    pass: 48
+    fail: 0
+    hit:  304
+    data_integrity_pct: "100%"
+  "cp_empty[1]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cp_full[0]":
+    pass: 48
+    fail: 0
+    hit:  352
+    data_integrity_pct: "100%"
+  "cp_full[1]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cp_half_empty[0]":
+    pass: 0
+    fail: 0
+    hit:  89
+    data_integrity_pct: "-"
+  "cp_half_empty[1]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cp_half_full[0]":
+    pass: 0
+    fail: 0
+    hit:  88
+    data_integrity_pct: "-"
+  "cp_half_full[1]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cp_ren[0]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cp_ren[1]":
+    pass: 48
+    fail: 0
+    hit:  48
+    data_integrity_pct: "100%"
+  "cp_rrst[0]":
+    pass: 0
+    fail: 0
+    hit:  8
+    data_integrity_pct: "-"
+  "cp_rrst[1]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cp_wen[0]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cp_wen[1]":
+    pass: 48
+    fail: 0
+    hit:  96
+    data_integrity_pct: "100%"
+  "cp_wrst[0]":
+    pass: 0
+    fail: 0
+    hit:  7
+    data_integrity_pct: "-"
+  "cp_wrst[1]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cx_empty_ren[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  256
+    data_integrity_pct: "-"
+  "cx_empty_ren[(0,1)]":
+    pass: 48
+    fail: 0
+    hit:  48
+    data_integrity_pct: "100%"
+  "cx_empty_ren[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cx_empty_ren[(1,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_full_empty[(0,0)]":
+    pass: 48
+    fail: 0
+    hit:  48
+    data_integrity_pct: "100%"
+  "cx_full_empty[(0,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_full_empty[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_full_empty[(1,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_full_wen[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cx_full_wen[(0,1)]":
+    pass: 48
+    fail: 0
+    hit:  352
+    data_integrity_pct: "100%"
+  "cx_full_wen[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cx_full_wen[(1,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_rrst_ren[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cx_rrst_ren[(0,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_rrst_ren[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cx_rrst_ren[(1,1)]":
+    pass: 48
+    fail: 0
+    hit:  48
+    data_integrity_pct: "100%"
+  "cx_wrst_wen[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cx_wrst_wen[(0,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_wrst_wen[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  4
+    data_integrity_pct: "-"
+  "cx_wrst_wen[(1,1)]":
+    pass: 48
+    fail: 0
+    hit:  96
+    data_integrity_pct: "100%"

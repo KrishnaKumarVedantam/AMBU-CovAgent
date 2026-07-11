@@ -1,0 +1,145 @@
+top:
+  cover_percentage: 100.0
+  coverage: 36
+  size: 36
+  type: <class 'cocotb_coverage.coverage.CoverItem'>
+top.cp_empty:
+  at_least: 1
+  bins:_hits:
+    0: 1170
+    1: 27
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_full:
+  at_least: 1
+  bins:_hits:
+    0: 1190
+    1: 7
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_half_empty:
+  at_least: 1
+  bins:_hits:
+    0: 1196
+    1: 1
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_half_full:
+  at_least: 1
+  bins:_hits:
+    0: 1104
+    1: 93
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_ren:
+  at_least: 1
+  bins:_hits:
+    0: 659
+    1: 538
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_rrst:
+  at_least: 1
+  bins:_hits:
+    0: 7
+    1: 1190
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_wen:
+  at_least: 1
+  bins:_hits:
+    0: 535
+    1: 662
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cp_wrst:
+  at_least: 1
+  bins:_hits:
+    0: 6
+    1: 1191
+  cover_percentage: 100.0
+  coverage: 2
+  size: 2
+  type: <class 'cocotb_coverage.coverage.CoverPoint'>
+  weight: 1
+top.cx_empty_ren:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 638
+    (0, 1): 532
+    (1, 0): 21
+    (1, 1): 6
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_full_empty:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 1164
+    (0, 1): 26
+    (1, 0): 6
+    (1, 1): 1
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_full_wen:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 531
+    (0, 1): 659
+    (1, 0): 4
+    (1, 1): 3
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_rrst_ren:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 3
+    (0, 1): 4
+    (1, 0): 656
+    (1, 1): 534
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1
+top.cx_wrst_wen:
+  at_least: 1
+  bins:_hits:
+    (0, 0): 2
+    (0, 1): 4
+    (1, 0): 533
+    (1, 1): 658
+  cover_percentage: 100.0
+  coverage: 4
+  size: 4
+  type: <class 'cocotb_coverage.coverage.CoverCross'>
+  weight: 1

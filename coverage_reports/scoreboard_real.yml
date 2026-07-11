@@ -1,0 +1,46 @@
+scoreboard:
+  "cp_empty[0]":
+    pass: 48
+    fail: 0
+    hit: 304
+    data_integrity_pct: "100%"
+  "cp_full[0]":
+    pass: 48
+    fail: 0
+    hit: 352
+    data_integrity_pct: "100%"
+  "cx_full_wen[(0,1)]":
+    pass: 30
+    fail: 18
+    hit: 48
+    data_integrity_pct: "62%"
+  "cx_empty_ren[(0,1)]":
+    pass: 48
+    fail: 0
+    hit: 48
+    data_integrity_pct: "100%"
+  "cx_full_empty[(0,0)]":
+    pass: 0
+    fail: 5
+    hit: 5
+    data_integrity_pct: "0%"
+  "cp_wen[1]":
+    pass: 48
+    fail: 0
+    hit: 96
+    data_integrity_pct: "100%"
+  "cp_ren[1]":
+    pass: 48
+    fail: 0
+    hit: 48
+    data_integrity_pct: "100%"
+  "cx_wrst_wen[(1,1)]":
+    pass: 48
+    fail: 0
+    hit: 96
+    data_integrity_pct: "100%"
+  "cx_rrst_ren[(1,1)]":
+    pass: 48
+    fail: 0
+    hit: 48
+    data_integrity_pct: "100%"

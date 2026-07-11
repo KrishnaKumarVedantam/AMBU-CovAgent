@@ -1,0 +1,71 @@
+scoreboard:
+  "cp_resetn[0]":
+    pass: 0
+    fail: 0
+    hit:  2
+    data_integrity_pct: "-"
+  "cp_resetn[1]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cp_tx_busy[0]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cp_tx_busy[1]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cp_tx_en[0]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cp_tx_en[1]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cx_en_busy[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cx_en_busy[(0,1)]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cx_en_busy[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
+  "cx_en_busy[(1,1)]":
+    pass: 0
+    fail: 0
+    hit:  0
+    data_integrity_pct: "-"
+  "cx_rst_en[(0,0)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_rst_en[(0,1)]":
+    pass: 0
+    fail: 0
+    hit:  1
+    data_integrity_pct: "-"
+  "cx_rst_en[(1,0)]":
+    pass: 0
+    fail: 0
+    hit:  6
+    data_integrity_pct: "-"
+  "cx_rst_en[(1,1)]":
+    pass: 0
+    fail: 0
+    hit:  5
+    data_integrity_pct: "-"
