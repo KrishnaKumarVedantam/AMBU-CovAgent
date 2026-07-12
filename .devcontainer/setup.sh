@@ -4,7 +4,7 @@ set -e
 echo "=== Installing build dependencies for Verilator ==="
 sudo apt-get update
 sudo apt-get install -y git help2man perl make autoconf g++ flex bison ccache \
-  libgoogle-perftools-dev numactl libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+  libgoogle-perftools-dev numactl libfl2 libfl-dev zlib1g zlib1g-dev
 
 echo "=== Building Verilator v5.048 from source ==="
 git clone https://github.com/verilator/verilator /tmp/verilator-src

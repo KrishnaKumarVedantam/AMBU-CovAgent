@@ -980,7 +980,7 @@ def main():
         if not sb_ok:
             print("  ALERT: scoreboard test failed")
 
-        time.sleep(60)
+        time.sleep(2)
 
     # ── Final report ──
     final_merged, final_attr = merge_coverage(base_bins, accumulated_directed_bins)
