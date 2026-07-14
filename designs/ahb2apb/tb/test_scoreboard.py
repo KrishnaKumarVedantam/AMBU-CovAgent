@@ -90,6 +90,21 @@ async def do_write_check(dut, sb, addr, data):
                 sb.errors += 1
                 cocotb.log.error(
                     f"FAIL: Pselx={pselx} expected {exp_sel} for addr=0x{addr:08X}")
+            # Verify Pwdata — confirmed by AMBA APB spec and RTL:
+            # Pwdata is a registered output, stable when Penable==1
+            # RTL: ST_WWAIT sets Pwdata_temp=Hwdata (combinational)
+            # ST_WENABLE: Pwdata registered from previous cycle, held stable
+            # ARM spec: PWDATA must remain stable until transfer completes
+            pwdata = int(dut.Pwdata.value)
+            if pwdata != data:
+                sb.errors += 1
+                cocotb.log.error(
+                    f"FAIL: Pwdata=0x{pwdata:08X} expected=0x{data:08X} "
+                    f"addr=0x{addr:08X}")
+            else:
+                cocotb.log.info(
+                    f"WRITE PASS: Paddr=0x{paddr:08X} Pwdata=0x{pwdata:08X} "
+                    f"Pselx={pselx}")
             sb.checks += 1
             break
 
