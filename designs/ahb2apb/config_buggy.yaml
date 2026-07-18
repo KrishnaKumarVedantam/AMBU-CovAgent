@@ -1,0 +1,24 @@
+design_name:      ahb2apb
+rtl_file:         rtl/bridge-top.v
+base_module:      tb.tb_ahb2apb
+directed_module:  tb.test_directed
+scoreboard_module: tb.test_scoreboard_buggy
+coverpoint_names:
+  - top.cp_hresetn
+  - top.cp_hwrite
+  - top.cp_htrans
+  - top.cp_hreadyin
+  - top.cp_valid
+  - top.cp_pselx
+  - top.cp_fsm
+  - top.cp_penable
+  - top.cx_write_htrans
+  - top.cx_psel_enable
+  - top.cx_write_valid
+threshold: 98
+max_iter:         8
+yml_cov:          coverage_reports/coverage.yml
+yml_base:         coverage_reports/coverage_base.yml
+sample_function:  sample_coverage
+chain_of_thought: false
+depth:            0

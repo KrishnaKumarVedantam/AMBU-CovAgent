@@ -1,0 +1,21 @@
+design_name: async_fifo
+rtl_file: rtl/async_fifo_flat.sv
+base_module: tb.tb_fifo
+scoreboard_module: tb.test_scoreboard_buggy
+threshold: 98.0
+max_iter: 8
+coverpoint_names:
+  - top.cp_full
+  - top.cp_empty
+  - top.cp_wen
+  - top.cp_ren
+  - top.cp_half_full
+  - top.cp_half_empty
+  - top.cp_wrst
+  - top.cp_rrst
+  - top.cx_full_wen
+  - top.cx_empty_ren
+  - top.cx_full_empty
+  - top.cx_wrst_wen
+  - top.cx_rrst_ren
+depth: 16
