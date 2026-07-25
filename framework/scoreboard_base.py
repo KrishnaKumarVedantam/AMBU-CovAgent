@@ -163,6 +163,20 @@ class ScoreboardBase:
         """Override. Clear reference model state."""
         pass
 
+    async def monitor(self, dut):
+        """
+        Override in design-specific scoreboard.
+        Start as background coroutine:
+            cocotb.start_soon(sb.monitor(dut))
+        Watches physical DUT pins passively — never drives signals.
+        Framework has zero knowledge of signal names or clock names.
+        That is design-specific knowledge belonging in the subclass.
+        """
+        raise NotImplementedError(
+            "Override monitor() in design-specific scoreboard "
+            "to watch DUT pins passively"
+        )
+
     def check_and_count(self, actual_data: int,
                         bin_name: str = None) -> bool:
         """
