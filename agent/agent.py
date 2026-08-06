@@ -737,7 +737,7 @@ def graph(history, base_pct, cfg):
                          textcoords="offset points",
                          xytext=(0, 8), ha='center', fontsize=9)
         plt.xlabel('Iteration'); plt.ylabel('Coverage (%)')
-        plt.title(f"UVM Coverage Agent — {cfg['design_name']} Coverage Closure")
+        plt.title(f"AMBU-CovAgent — {cfg['design_name']} Coverage Closure")
         plt.ylim(0, 105); plt.xticks(x); plt.legend()
         plt.grid(True, alpha=0.3)
         plt.savefig(str(cfg['graph_path']), dpi=150, bbox_inches='tight')
@@ -754,7 +754,7 @@ def graph(history, base_pct, cfg):
 def main():
     # ── Parse args ──
     parser = argparse.ArgumentParser(
-        description="UVM Coverage Agent — reusable for any cocotb design"
+        description="AMBU-CovAgent — reusable for any cocotb design"
     )
     parser.add_argument('config', help="Path to design config.yaml")
     args = parser.parse_args()
@@ -799,7 +799,7 @@ def main():
 
     print()
     print("=" * 55)
-    print(f"UVM Coverage Agent — {cfg['design_name']}")
+    print(f"AMBU-CovAgent — {cfg['design_name']}")
     print(f"Base coverage ({cfg['base_module']}): {base_pct:.1f}%")
     print(f"Target: {cfg['threshold']:.0f}% (merged) AND no DATA FAIL")
     print("=" * 55)
