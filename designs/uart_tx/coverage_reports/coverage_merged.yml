@@ -2,7 +2,7 @@ _attribution:
   cp_fsm[0]: BOTH
   cp_fsm[1]: BOTH
   cp_fsm[2]: BOTH
-  cp_fsm[3]: BOTH
+  cp_fsm[3]: BASE
   cp_resetn[0]: BOTH
   cp_resetn[1]: BOTH
   cp_tx_busy[0]: BOTH
@@ -18,21 +18,21 @@ _attribution:
   cx_rst_en[(1,0)]: BOTH
   cx_rst_en[(1,1)]: BOTH
 _merged_bins:
-  cp_fsm[0]: 40
-  cp_fsm[1]: 53
-  cp_fsm[2]: 443
-  cp_fsm[3]: 55
-  cp_resetn[0]: 16
-  cp_resetn[1]: 575
-  cp_tx_busy[0]: 40
-  cp_tx_busy[1]: 551
-  cp_tx_en[0]: 543
-  cp_tx_en[1]: 48
-  cx_en_busy[(0,0)]: 25
-  cx_en_busy[(0,1)]: 518
-  cx_en_busy[(1,0)]: 15
-  cx_en_busy[(1,1)]: 33
-  cx_rst_en[(0,0)]: 6
-  cx_rst_en[(0,1)]: 10
-  cx_rst_en[(1,0)]: 537
+  cp_fsm[0]: 239
+  cp_fsm[1]: 51
+  cp_fsm[2]: 282
+  cp_fsm[3]: 33
+  cp_resetn[0]: 14
+  cp_resetn[1]: 591
+  cp_tx_busy[0]: 239
+  cp_tx_busy[1]: 366
+  cp_tx_en[0]: 563
+  cp_tx_en[1]: 42
+  cx_en_busy[(0,0)]: 229
+  cx_en_busy[(0,1)]: 334
+  cx_en_busy[(1,0)]: 10
+  cx_en_busy[(1,1)]: 32
+  cx_rst_en[(0,0)]: 10
+  cx_rst_en[(0,1)]: 4
+  cx_rst_en[(1,0)]: 553
   cx_rst_en[(1,1)]: 38

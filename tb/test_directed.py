@@ -2,7 +2,6 @@ import cocotb
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ReadOnly
 from cocotb_coverage.coverage import coverage_db
@@ -12,153 +11,94 @@ try:
 except ImportError:
     from tb.tb_fifo import sample_coverage
 
-
 @cocotb.test()
-async def test_full_empty_simultaneous(dut):
-    """
-    Target cx_full_empty[(1,1)]: full=1 AND empty=1 simultaneously.
-    Fill FIFO to get full=1, then assert r_rst_n=0 which asynchronously
-    forces empty=1 per RTL (negedge r_rst_n in always_ff).
-    """
-
+async def test_async_fifo_priority1(dut):
     cocotb.start_soon(Clock(dut.wclk, 10, units='ns').start())
-    cocotb.start_soon(Clock(dut.rclk, 13, units='ns').start())
+    cocotb.start_soon(Clock(dut.rclk, 15, units='ns').start())
 
-    # --- Reset both domains ---
+    write_queue = []
+
+    # Initialize signals
     dut.w_rst_n.value = 0
     dut.r_rst_n.value = 0
     dut.w_en.value = 0
     dut.r_en.value = 0
     dut.data_in.value = 0
 
-    for _ in range(8):
+    for _ in range(5):
         await RisingEdge(dut.wclk)
 
-    for _ in range(8):
-        await RisingEdge(dut.rclk)
-
-    # Release reset - assign BEFORE any ReadOnly
-    dut.w_rst_n.value = 1
-    dut.r_rst_n.value = 1
-
-    for _ in range(4):
-        await RisingEdge(dut.wclk)
-
-    # --- Phase 1: Fill FIFO to get full=1 ---
-    # Pattern: await RisingEdge first, then set signals, then await ReadOnly, then sample
-    # This ensures we are NOT in ReadOnly phase when assigning signals
-
-    for i in range(512):
-        await RisingEdge(dut.wclk)
-        # Now safe to assign - we just passed the rising edge, not in ReadOnly
-        dut.w_en.value = 1
-        dut.r_en.value = 0
-        dut.data_in.value = (i * 7 + 13) & 0xFF
-        await ReadOnly()
-        await sample_coverage(dut)
-
-        if int(dut.full.value):
-            break
-
-    # --- Phase 2: Assert r_rst_n=0 while full=1 ---
-    # empty has async reset: negedge r_rst_n forces empty=1 immediately
-    # full remains 1 since w_rst_n is still high and FIFO is full
-
-    await RisingEdge(dut.wclk)
-    dut.w_en.value = 0
-    dut.r_en.value = 0
-    dut.r_rst_n.value = 0
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.rclk)
-    # Do NOT assign signals here - just sample
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.wclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.rclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.wclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.rclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.wclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    await RisingEdge(dut.rclk)
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    # Release r_rst_n
-    await RisingEdge(dut.rclk)
-    dut.r_rst_n.value = 1
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    for _ in range(4):
-        await RisingEdge(dut.rclk)
-
-    # --- Phase 3: Read out FIFO ---
-    for _ in range(300):
-        await RisingEdge(dut.rclk)
-        dut.r_en.value = 1
-        dut.w_en.value = 0
-        await ReadOnly()
-        await sample_coverage(dut)
-
-        if int(dut.empty.value):
-            break
-
-    await RisingEdge(dut.rclk)
-    dut.r_en.value = 0
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    # --- Phase 4: Full reset and refill for half_full/half_empty coverage ---
+    # =========================================================
+    # TARGET: cx_wrst_wen[(0,1)] — w_rst_n=0 AND w_en=1
+    # =========================================================
     await RisingEdge(dut.wclk)
     dut.w_rst_n.value = 0
-    dut.r_rst_n.value = 0
-    dut.w_en.value = 0
-    dut.r_en.value = 0
-    dut.data_in.value = 0
+    dut.w_en.value = 1
+    dut.data_in.value = 0xAA
     await ReadOnly()
     await sample_coverage(dut)
 
-    for _ in range(6):
-        await RisingEdge(dut.wclk)
+    await RisingEdge(dut.wclk)
+    dut.w_rst_n.value = 0
+    dut.w_en.value = 1
+    dut.data_in.value = 0xBB
+    await ReadOnly()
+    await sample_coverage(dut)
 
-    for _ in range(6):
-        await RisingEdge(dut.rclk)
+    await RisingEdge(dut.wclk)
+    dut.w_rst_n.value = 0
+    dut.w_en.value = 1
+    dut.data_in.value = 0xCC
+    await ReadOnly()
+    await sample_coverage(dut)
 
+    # =========================================================
+    # TARGET: cx_rrst_ren[(0,1)] — r_rst_n=0 AND r_en=1
+    # =========================================================
+    await RisingEdge(dut.rclk)
+    dut.r_rst_n.value = 0
+    dut.r_en.value = 1
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    await RisingEdge(dut.rclk)
+    dut.r_rst_n.value = 0
+    dut.r_en.value = 1
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    await RisingEdge(dut.rclk)
+    dut.r_rst_n.value = 0
+    dut.r_en.value = 1
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    # =========================================================
+    # Release resets — all assignments before ReadOnly
+    # =========================================================
     await RisingEdge(dut.wclk)
     dut.w_rst_n.value = 1
     dut.r_rst_n.value = 1
+    dut.w_en.value = 0
+    dut.r_en.value = 0
     await ReadOnly()
     await sample_coverage(dut)
 
     for _ in range(3):
         await RisingEdge(dut.wclk)
 
-    # Write to trigger half_full (waddr == 8'b01011000 = 88)
-    for i in range(200):
+    # =========================================================
+    # TARGET: cx_full_empty[(1,1)]
+    # Fill FIFO to get full=1, then assert r_rst_n=0 to get empty=1
+    # =========================================================
+
+    # Fill the FIFO — all signal assignments before ReadOnly
+    for i in range(300):
         await RisingEdge(dut.wclk)
         dut.w_en.value = 1
-        dut.r_en.value = 0
-        dut.data_in.value = (i * 5 + 3) & 0xFF
+        dut.data_in.value = i & 0xFF
         await ReadOnly()
         await sample_coverage(dut)
-
         if int(dut.full.value):
             break
 
@@ -167,46 +107,37 @@ async def test_full_empty_simultaneous(dut):
     await ReadOnly()
     await sample_coverage(dut)
 
-    for _ in range(3):
+    for _ in range(5):
         await RisingEdge(dut.wclk)
         await ReadOnly()
         await sample_coverage(dut)
 
-    # Read to trigger half_empty (raddr == 8'b01011000 = 88)
-    for _ in range(200):
+    # Assert r_rst_n=0 asynchronously — empty goes to 1 per RTL
+    # full remains 1 since write domain not reset
+    for _ in range(10):
         await RisingEdge(dut.rclk)
-        dut.r_en.value = 1
+        dut.r_rst_n.value = 0
         await ReadOnly()
         await sample_coverage(dut)
 
-        if int(dut.empty.value):
-            break
-
     await RisingEdge(dut.rclk)
+    dut.r_rst_n.value = 1
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    # =========================================================
+    # PRIORITY 2: Data integrity — full reset then write/read
+    # =========================================================
+    await RisingEdge(dut.wclk)
+    dut.w_rst_n.value = 0
+    dut.r_rst_n.value = 0
+    dut.w_en.value = 0
     dut.r_en.value = 0
     await ReadOnly()
     await sample_coverage(dut)
 
     for _ in range(5):
-        await RisingEdge(dut.rclk)
-        await ReadOnly()
-        await sample_coverage(dut)
-
-    # --- Phase 5: Second attempt at full+empty simultaneously ---
-    await RisingEdge(dut.wclk)
-    dut.w_rst_n.value = 0
-    dut.r_rst_n.value = 0
-    dut.w_en.value = 0
-    dut.r_en.value = 0
-    dut.data_in.value = 0
-    await ReadOnly()
-    await sample_coverage(dut)
-
-    for _ in range(8):
         await RisingEdge(dut.wclk)
-
-    for _ in range(8):
-        await RisingEdge(dut.rclk)
 
     await RisingEdge(dut.wclk)
     dut.w_rst_n.value = 1
@@ -214,36 +145,120 @@ async def test_full_empty_simultaneous(dut):
     await ReadOnly()
     await sample_coverage(dut)
 
-    for _ in range(4):
+    write_queue.clear()
+
+    for _ in range(3):
         await RisingEdge(dut.wclk)
 
-    # Fill FIFO completely
-    for i in range(512):
-        await RisingEdge(dut.wclk)
-        dut.w_en.value = 1
-        dut.r_en.value = 0
-        dut.data_in.value = (i * 3 + 17) & 0xFF
-        await ReadOnly()
-        await sample_coverage(dut)
-
-        if int(dut.full.value):
-            break
-
-    # Assert r_rst_n=0 - empty goes to 1 asynchronously
+    # Sample empty=1 state
     await RisingEdge(dut.wclk)
     dut.w_en.value = 0
     dut.r_en.value = 0
-    dut.r_rst_n.value = 0
     await ReadOnly()
     await sample_coverage(dut)
 
-    for _ in range(8):
+    # Write entries and track data
+    written = 0
+    for i in range(300):
+        await RisingEdge(dut.wclk)
+        val = (i * 5 + 13) & 0xFF
+        dut.w_en.value = 1
+        dut.data_in.value = val
+        await ReadOnly()
+        is_full = int(dut.full.value)
+        await sample_coverage(dut)
+        if not is_full:
+            write_queue.append(val)
+            written += 1
+        if is_full:
+            break
+
+    await RisingEdge(dut.wclk)
+    dut.w_en.value = 0
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    # Sample full=1
+    for _ in range(3):
         await RisingEdge(dut.wclk)
         await ReadOnly()
         await sample_coverage(dut)
 
-    for _ in range(8):
+    # Read back and verify data integrity
+    prev_empty = int(dut.empty.value)
+    for i in range(written + 20):
         await RisingEdge(dut.rclk)
+        dut.r_en.value = 1
+        await ReadOnly()
+        cur_empty = int(dut.empty.value)
+        await sample_coverage(dut)
+        if not prev_empty and len(write_queue) > 0:
+            actual = int(dut.data_out.value)
+            expected = write_queue.pop(0)
+            assert actual == expected, f'DATA FAIL: {actual} != {expected}'
+        prev_empty = cur_empty
+        if cur_empty and i > 5:
+            break
+
+    await RisingEdge(dut.rclk)
+    dut.r_en.value = 0
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    # Sample empty after draining
+    for _ in range(5):
+        await RisingEdge(dut.rclk)
+        await ReadOnly()
+        await sample_coverage(dut)
+
+    # =========================================================
+    # Second attempt at cx_full_empty with fresh fill
+    # =========================================================
+    await RisingEdge(dut.wclk)
+    dut.w_rst_n.value = 0
+    dut.r_rst_n.value = 0
+    dut.w_en.value = 0
+    dut.r_en.value = 0
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    for _ in range(5):
+        await RisingEdge(dut.wclk)
+
+    await RisingEdge(dut.wclk)
+    dut.w_rst_n.value = 1
+    dut.r_rst_n.value = 1
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    for _ in range(3):
+        await RisingEdge(dut.wclk)
+
+    write_queue.clear()
+
+    for i in range(300):
+        await RisingEdge(dut.wclk)
+        dut.w_en.value = 1
+        dut.data_in.value = i & 0xFF
+        await ReadOnly()
+        await sample_coverage(dut)
+        if int(dut.full.value):
+            break
+
+    await RisingEdge(dut.wclk)
+    dut.w_en.value = 0
+    await ReadOnly()
+    await sample_coverage(dut)
+
+    for _ in range(10):
+        await RisingEdge(dut.wclk)
+        await ReadOnly()
+        await sample_coverage(dut)
+
+    # Assert r_rst_n=0 while full=1 to get empty=1 simultaneously
+    for _ in range(15):
+        await RisingEdge(dut.rclk)
+        dut.r_rst_n.value = 0
         await ReadOnly()
         await sample_coverage(dut)
 
@@ -252,9 +267,4 @@ async def test_full_empty_simultaneous(dut):
     await ReadOnly()
     await sample_coverage(dut)
 
-    for _ in range(4):
-        await RisingEdge(dut.rclk)
-        await ReadOnly()
-        await sample_coverage(dut)
-
-    coverage_db.export_to_yaml("/Users/krishna/uvm-coverage-agent-backup-v2.9/coverage_reports/coverage.yml")
+    coverage_db.export_to_yaml("/Users/krishna/uvm-coverage-agent-backup-v2.10.3.git/coverage_reports/coverage.yml")

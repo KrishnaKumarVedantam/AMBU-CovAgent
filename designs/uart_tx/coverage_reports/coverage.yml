@@ -1,25 +1,25 @@
 top:
-  cover_percentage: 100.0
-  coverage: 18
+  cover_percentage: 94.44
+  coverage: 17
   size: 18
   type: <class 'cocotb_coverage.coverage.CoverItem'>
 top.cp_fsm:
   at_least: 1
   bins:_hits:
-    0: 27
-    1: 25
-    2: 176
-    3: 22
-  cover_percentage: 100.0
-  coverage: 4
+    0: 226
+    1: 23
+    2: 15
+    3: 0
+  cover_percentage: 75.0
+  coverage: 3
   size: 4
   type: <class 'cocotb_coverage.coverage.CoverPoint'>
   weight: 1
 top.cp_resetn:
   at_least: 1
   bins:_hits:
-    0: 11
-    1: 239
+    0: 9
+    1: 255
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -28,8 +28,8 @@ top.cp_resetn:
 top.cp_tx_busy:
   at_least: 1
   bins:_hits:
-    0: 27
-    1: 223
+    0: 226
+    1: 38
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -38,8 +38,8 @@ top.cp_tx_busy:
 top.cp_tx_en:
   at_least: 1
   bins:_hits:
-    0: 205
-    1: 45
+    0: 225
+    1: 39
   cover_percentage: 100.0
   coverage: 2
   size: 2
@@ -48,10 +48,10 @@ top.cp_tx_en:
 top.cx_en_busy:
   at_least: 1
   bins:_hits:
-    (0, 0): 15
-    (0, 1): 190
-    (1, 0): 12
-    (1, 1): 33
+    (0, 0): 219
+    (0, 1): 6
+    (1, 0): 7
+    (1, 1): 32
   cover_percentage: 100.0
   coverage: 4
   size: 4
@@ -60,9 +60,9 @@ top.cx_en_busy:
 top.cx_rst_en:
   at_least: 1
   bins:_hits:
-    (0, 0): 1
-    (0, 1): 10
-    (1, 0): 204
+    (0, 0): 5
+    (0, 1): 4
+    (1, 0): 220
     (1, 1): 35
   cover_percentage: 100.0
   coverage: 4

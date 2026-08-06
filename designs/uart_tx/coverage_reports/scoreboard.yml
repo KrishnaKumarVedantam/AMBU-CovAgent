@@ -15,10 +15,10 @@ scoreboard:
     hit:  6
     data_integrity_pct: "-"
   "cp_tx_busy[1]":
-    pass: 0
+    pass: 45
     fail: 0
-    hit:  5
-    data_integrity_pct: "-"
+    hit:  50
+    data_integrity_pct: "100%"
   "cp_tx_en[0]":
     pass: 0
     fail: 0
@@ -35,10 +35,10 @@ scoreboard:
     hit:  5
     data_integrity_pct: "-"
   "cx_en_busy[(0,1)]":
-    pass: 0
+    pass: 5
     fail: 0
     hit:  5
-    data_integrity_pct: "-"
+    data_integrity_pct: "100%"
   "cx_en_busy[(1,0)]":
     pass: 0
     fail: 0

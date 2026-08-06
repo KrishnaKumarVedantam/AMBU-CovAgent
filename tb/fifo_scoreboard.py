@@ -163,6 +163,17 @@ class FIFOScoreboard(ScoreboardBase):
             if prev_r_en == 1 and prev_empty == 0 and prev_data is not None:
                 if len(self.write_queue) > 0:
                     self.check_and_count(prev_data, 'cx_empty_ren[(0,1)]')
+                else:
+                    # Orphan check: DUT claims a valid read (r_en=1,
+                    # empty=0) but our reference write_queue is already
+                    # empty — a real desync (e.g. empty flag glitching
+                    # after reset), not something to pass over silently.
+                    self.underflow_count += 1
+                    cocotb.log.error(
+                        f"FIFO SCOREBOARD: queue underflow at read "
+                        f"(orphan — DUT read with empty reference "
+                        f"queue). Total: {self.underflow_count}"
+                    )
             prev_r_en  = curr_r_en
             prev_empty = curr_empty
             prev_data  = curr_data
