@@ -127,7 +127,62 @@ coverage model before running the full agent.
 Codespace invocation of `python3 agent/agent.py config.yaml`.*
 
 ```
-[PASTE REAL AGENT OUTPUT HERE]
+=======================================================
+FINAL REPORT
+=======================================================
+Design:                    async_fifo
+Base coverage (tb.tb_fifo): 91.7%
+Merged coverage (total):   100.0%
+Agent contribution:        +8.3%
+Data failures:             0
+Not hit bins:              0
+Verified bins:             9
+Iterations used:           6
+History (merged%):         ['92%', '92%', '97%', '97%', '97%', '100%']
+
+COVERAGE ATTRIBUTION (Option C):
+
+  BIN                                      BASE  AGENT  TOTAL  SOURCE
+  -------------------------------------- ------ ------ ------  ------
+  cp_empty[0]                               915     90   1005  BOTH
+  cp_empty[1]                                13     45     58  BOTH
+  cp_full[0]                                922    135   1057  BOTH
+  cp_full[1]                                  6     19     25  BOTH
+  cp_half_empty[0]                          926    135   1061  BOTH
+  cp_half_empty[1]                            2      0      2  BASE
+  cp_half_full[0]                           837    135    972  BOTH
+  cp_half_full[1]                            91      0     91  BASE
+  cp_ren[0]                                 387     75    462  BOTH
+  cp_ren[1]                                 541     60    601  BOTH
+  cp_rrst[0]                                  2     18     20  BOTH
+  cp_rrst[1]                                926    118   1044  BOTH
+  cp_wen[0]                                 512     74    586  BOTH
+  cp_wen[1]                                 416     61    477  BOTH
+  cp_wrst[0]                                  2     19     21  BOTH
+  cp_wrst[1]                                926    116   1042  BOTH
+  cx_empty_ren[(0,0)]                       378     42    420  BOTH
+  cx_empty_ren[(0,1)]                       537     48    585  BOTH
+  cx_empty_ren[(1,0)]                         9     33     42  BOTH
+  cx_empty_ren[(1,1)]                         4     12     16  BOTH
+  cx_full_empty[(0,0)]                      909     90    999  BOTH
+  cx_full_empty[(0,1)]                       13     45     58  BOTH
+  cx_full_empty[(1,0)]                        6      1      7  BOTH
+  cx_full_empty[(1,1)]                        0     18     18  AGENT
+  cx_full_wen[(0,0)]                        508     74    582  BOTH
+  cx_full_wen[(0,1)]                        414     61    475  BOTH
+  cx_full_wen[(1,0)]                          4     19     23  BOTH
+  cx_full_wen[(1,1)]                          2      0      2  BASE
+  cx_rrst_ren[(0,0)]                          2     18     20  BOTH
+  cx_rrst_ren[(0,1)]                          0      8      8  AGENT
+  cx_rrst_ren[(1,0)]                        385     66    451  BOTH
+  cx_rrst_ren[(1,1)]                        541     52    593  BOTH
+  cx_wrst_wen[(0,0)]                          2      6      8  BOTH
+  cx_wrst_wen[(0,1)]                          0     13     13  AGENT
+  cx_wrst_wen[(1,0)]                        510     68    578  BOTH
+  cx_wrst_wen[(1,1)]                        416     48    464  BOTH
+
+  Summary: BASE=3  AGENT=3  BOTH=30
+  Graph: /workspaces/AMBU-CovAgent/coverage_reports/coverage_graph.png
 ```
 
 ---
