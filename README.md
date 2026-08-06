@@ -28,8 +28,10 @@ on all three** with zero data-integrity failures in the base stimulus.
 1. **Open in Codespaces:** Code → Codespaces → Create codespace on
    main.
 
-   *The first build compiles Verilator, installs Python dependencies,
-   and builds cocotb from scratch — this typically takes around **10
+   *This project includes a [`.devcontainer`](.devcontainer/) config
+   (`devcontainer.json` + `setup.sh`) that automatically compiles
+   Verilator, installs Python dependencies, and builds cocotb from
+   scratch on first launch — this typically takes around **5-10
    minutes**. This is expected; it isn't stuck.*
 2. **Confirm the environment**, once the Codespace finishes building:
 
