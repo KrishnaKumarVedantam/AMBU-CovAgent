@@ -41,11 +41,13 @@ python3 -c "import cocotb; print(cocotb.__version__)"
    You should see a real path for `verilator` and `2.0.1` (or later)
    printed for cocotb. If either fails, the build likely hasn't
    finished yet — wait a little longer and try again.
+   
 3. **Get an API key.** Want to try the full agent yourself? Get a
    free/trial Claude API key at
    [console.anthropic.com](https://console.anthropic.com) — it only
    takes a minute.
-4. **Add it as a Codespaces secret:**
+   
+5. **Add it as a Codespaces secret:**
    - Go to your GitHub account's
      [Codespaces secrets settings](https://github.com/settings/codespaces).
    - Click **New repository secret**.
@@ -54,7 +56,7 @@ python3 -c "import cocotb; print(cocotb.__version__)"
      a different name).
    - Paste your key as the value, and select this repository under
      "Repository access."
-5. If your Codespace was already open before adding the secret, **stop
+6. If your Codespace was already open before adding the secret, **stop
    and reopen it** — secrets are only injected into newly-started
    Codespaces, not live ones.
 
