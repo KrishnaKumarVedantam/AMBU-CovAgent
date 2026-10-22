@@ -5,14 +5,23 @@
 Given real RTL and a base testbench, this agent automatically generates
 targeted directed tests to close functional coverage gaps — including
 hard, CDC-timing-dependent bins that traditionally require manual
-engineering effort. Verified across three architecturally distinct
-designs (async FIFO, UART TX, AHB2APB bridge), reaching **100% coverage
-on all three** with zero data-integrity failures in the base stimulus.
+engineering effort. On three architecturally distinct RTL designs (an asynchronous FIFO, a
+UART transmitter and an AHB2APB bridge) the agent raised coverage from
+91.7%, 88.9% and 67.4% to 100% within its 8-iteration budget in every
+logged run, using one design-agnostic agent. A reactive scoreboard
+monitor attached to the FIFO's base testbench also found a
+clock-domain-crossing bug in the author's own stimulus code. The monitor
+is not yet attached to the LLM-generated tests, so their data integrity
+is not independently checked.
 
 ---
 
 ## 📄 Documentation
 
+- 📝 **[Paper: Independent Data-Integrity Verification for LLM-Driven Functional Coverage Closure in Hardware Design](https://arxiv.org/abs/2610.21570)**
+  ([arXiv 2610.21570](https://arxiv.org/abs/2610.21570)), NeurIPS 2026
+  AI4ChipDesign workshop poster.
+  
 - 🔬 **[Research & Implementation Report](./AMBU-CovAgent_Research_and_Implementation_Report.md)**
   — full technical history: every bottleneck found, its root cause, its
   fix, its verification evidence, and the published research that
@@ -100,8 +109,8 @@ cd designs/ahb2apb && rm -f LESSONS.md && python3 ../../agent/agent.py config.ya
 
 The agent measures starting coverage, queries the LLM to target
 uncovered bins, runs the generated tests against the real RTL via
-Verilator, and reports merged coverage until 100% closure is reached —
-typically 2–4 iterations per design.
+Verilator, and merges the results. It stops when coverage reaches the
+threshold (98%) with zero data failures, or after 8 iterations.
 
 ### Option B — Explore the testbenches (no API key required)
 
@@ -122,9 +131,6 @@ coverage model before running the full agent.
 ---
 
 ## 🖥️ Example Output
-
-*A real run's output will be added here, pasted directly from a fresh
-Codespace invocation of `python3 agent/agent.py config.yaml`.*
 
 ```
 =======================================================
@@ -259,3 +265,7 @@ LLM-driven EDA and functional verification.
 Distributed under the **BSD 3-Clause License**, matching the license
 of [cocotb](https://www.cocotb.org/), this project's core dependency.
 See [`LICENSE`](./LICENSE) for the full text.
+
+The RTL designs (async FIFO, UART TX, AHB2APB bridge) are small,
+standard educational designs. They keep any original author headers and
+are not covered by this license.
