@@ -19,8 +19,8 @@ is not independently checked.
 ## 📄 Documentation
 
 - 📝 **[Paper: Independent Data-Integrity Verification for LLM-Driven Functional Coverage Closure in Hardware Design](https://arxiv.org/abs/2610.21570)**
-  ([arXiv 2610.21570](https://arxiv.org/abs/2610.21570)), NeurIPS 2026
-  AI4ChipDesign workshop poster.
+  ([arXiv 2610.21570](https://arxiv.org/abs/2610.21570)), accepted as a poster at the NeurIPS 2026
+  AI4ChipDesign workshop.
   
 - 🔬 **[Research & Implementation Report](./AMBU-CovAgent_Research_and_Implementation_Report.md)**
   — full technical history: every bottleneck found, its root cause, its
